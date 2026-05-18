@@ -7,224 +7,132 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --tg-bg: var(--tg-theme-bg-color, #ffffff);
-    --tg-text: var(--tg-theme-text-color, #1e293b);
-    --tg-hint: var(--tg-theme-hint-color, #64748b);
-    --tg-link: var(--tg-theme-link-color, #4f46e5);
-    --tg-btn: var(--tg-theme-button-color, #4f46e5);
-    --tg-btn-text: var(--tg-theme-button-text-color, #ffffff);
-    --tg-secondary: var(--tg-theme-secondary-bg-color, #f1f5f9);
+    --bg:  var(--tg-theme-bg-color, #ffffff);
+    --txt: var(--tg-theme-text-color, #1e293b);
+    --hint:var(--tg-theme-hint-color, #64748b);
+    --sec: var(--tg-theme-secondary-bg-color, #f1f5f9);
+    --btn: var(--tg-theme-button-color, #4f46e5);
+    --btx: var(--tg-theme-button-text-color, #ffffff);
+    --sep: rgba(0,0,0,.07);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
-    background: var(--tg-bg);
-    color: var(--tg-text);
-    padding: 16px;
-    padding-bottom: 80px;
-    font-size: 15px;
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
+       background:var(--bg);color:var(--txt);
+       padding:16px;padding-bottom:90px;font-size:15px}
 
-  .section-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .6px;
-    color: var(--tg-hint);
-    margin: 20px 0 8px;
-  }
+  .sec-title{font-size:11px;font-weight:700;text-transform:uppercase;
+             letter-spacing:.6px;color:var(--hint);margin:20px 0 8px}
 
-  .field-group {
-    background: var(--tg-secondary);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .field-row {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 14px;
-    border-bottom: 1px solid rgba(0,0,0,.06);
-  }
-  .field-row:last-child { border-bottom: none; }
-  .field-label {
-    font-size: 11px;
-    color: var(--tg-hint);
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-  .field-input {
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    color: var(--tg-text);
-    width: 100%;
-    padding: 0;
-  }
-  .field-input::placeholder { color: var(--tg-hint); }
+  /* Поля */
+  .fgroup{background:var(--sec);border-radius:12px;overflow:hidden}
+  .frow{display:flex;flex-direction:column;padding:11px 14px;
+        border-bottom:1px solid var(--sep)}
+  .frow:last-child{border-bottom:none}
+  .flabel{font-size:11px;color:var(--hint);margin-bottom:3px;font-weight:600}
+  .finput{background:transparent;border:none;outline:none;
+          font-size:15px;color:var(--txt);width:100%;padding:0}
+  .finput::placeholder{color:var(--hint)}
 
-  /* Tool list */
-  .tool-list {
-    background: var(--tg-secondary);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .tool-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 14px;
-    border-bottom: 1px solid rgba(0,0,0,.06);
-    cursor: pointer;
-    transition: background .1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .tool-item:last-child { border-bottom: none; }
-  .tool-item:active { background: rgba(0,0,0,.04); }
+  /* Инструмент */
+  .tlist{background:var(--sec);border-radius:12px;overflow:hidden}
+  .titem{display:flex;align-items:center;gap:12px;
+         padding:13px 14px;border-bottom:1px solid var(--sep);
+         cursor:pointer;-webkit-tap-highlight-color:transparent;
+         transition:background .1s}
+  .titem:last-child{border-bottom:none}
+  .titem:active{background:rgba(0,0,0,.04)}
+  .tcheck{width:22px;height:22px;border-radius:50%;border:2px solid #cbd5e1;
+          flex-shrink:0;display:flex;align-items:center;justify-content:center;
+          transition:all .15s}
+  .titem.on .tcheck{background:var(--btn);border-color:var(--btn)}
+  .tcheck svg{display:none}
+  .titem.on .tcheck svg{display:block}
+  .tico{font-size:20px;flex-shrink:0;width:26px;text-align:center}
+  .tname{flex:1;font-size:14px;line-height:1.35}
+  .tpts{font-size:11px;color:var(--hint);background:rgba(0,0,0,.06);
+        padding:2px 7px;border-radius:10px;font-weight:700;white-space:nowrap}
+  .tpts.pro{background:#ede9fe;color:#6d28d9}
 
-  .tool-check {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #cbd5e1;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .15s;
-  }
-  .tool-item.checked .tool-check {
-    background: var(--tg-btn);
-    border-color: var(--tg-btn);
-  }
-  .tool-check svg { display: none; }
-  .tool-item.checked .tool-check svg { display: block; }
+  /* Результат */
+  .scard{background:var(--sec);border-radius:12px;padding:16px;
+         display:flex;align-items:center;gap:14px}
+  .scirc{width:64px;height:64px;border-radius:50%;border:3px solid #e2e8f0;
+         display:flex;flex-direction:column;align-items:center;
+         justify-content:center;flex-shrink:0;transition:border-color .3s}
+  .snum{font-size:18px;font-weight:800;line-height:1;transition:color .3s}
+  .smax{font-size:10px;color:var(--hint)}
+  .sinfo{flex:1}
+  .scat{font-size:16px;font-weight:700;margin-bottom:5px}
+  .sbar-wrap{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}
+  .sbar{height:100%;border-radius:3px;transition:width .3s,background .3s;width:0%}
+  .spct{font-size:11px;color:var(--hint);margin-top:4px}
 
-  .tool-icon { font-size: 20px; flex-shrink: 0; }
-  .tool-name { flex: 1; font-size: 14px; line-height: 1.3; }
-  .tool-pts {
-    font-size: 12px;
-    color: var(--tg-hint);
-    background: rgba(0,0,0,.06);
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-weight: 600;
-  }
+  /* Ошибка */
+  .err{display:none;color:#dc2626;font-size:12px;padding:8px 14px;
+       background:#fef2f2;border-radius:8px;margin-top:8px}
+  .err.show{display:block}
 
-  /* Score card */
-  .score-card {
-    background: var(--tg-secondary);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .score-circle {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: 3px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: border-color .3s;
-  }
-  .score-num { font-size: 18px; font-weight: 800; line-height: 1; }
-  .score-max { font-size: 10px; color: var(--tg-hint); }
-  .score-info { flex: 1; }
-  .score-cat { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .score-bar-wrap {
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .score-bar {
-    height: 100%;
-    border-radius: 3px;
-    transition: width .3s, background .3s;
-    width: 0%;
-  }
-  .score-pct { font-size: 11px; color: var(--tg-hint); margin-top: 3px; }
+  /* Success overlay */
+  .success{display:none;position:fixed;inset:0;background:var(--bg);
+           flex-direction:column;align-items:center;justify-content:center;
+           gap:12px;text-align:center;padding:32px;z-index:100}
+  .success.show{display:flex}
+  .success-icon{font-size:64px}
+  .success-title{font-size:20px;font-weight:700}
+  .success-sub{font-size:14px;color:var(--hint);max-width:260px}
 
-  /* Error */
-  .error-msg {
-    display: none;
-    color: #dc2626;
-    font-size: 12px;
-    padding: 8px 14px;
-    background: #fef2f2;
-    border-radius: 8px;
-    margin-top: 8px;
-  }
-  .error-msg.show { display: block; }
-
-  /* Bottom button */
-  .submit-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    padding: 12px 16px;
-    background: var(--tg-bg);
-    border-top: 1px solid rgba(0,0,0,.08);
-  }
-  .submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--tg-btn);
-    color: var(--tg-btn-text);
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .15s;
-  }
-  .submit-btn:active { opacity: .8; }
-  .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+  /* Кнопка */
+  .bar{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;
+       background:var(--bg);border-top:1px solid var(--sep)}
+  .sbtn{width:100%;padding:14px;background:var(--btn);color:var(--btx);
+        border:none;border-radius:12px;font-size:15px;font-weight:600;
+        cursor:pointer;transition:opacity .15s}
+  .sbtn:active{opacity:.8}
+  .sbtn:disabled{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
 
-<div class="section-title">Личные данные</div>
-<div class="field-group">
-  <div class="field-row">
-    <div class="field-label">ФИО</div>
-    <input class="field-input" id="fio" type="text" placeholder="Иванов Иван Иванович"
-           autocomplete="name" autocorrect="off">
+<div class="sec-title">Личные данные</div>
+<div class="fgroup">
+  <div class="frow">
+    <div class="flabel">ФИО</div>
+    <input class="finput" id="fio" type="text" placeholder="Иванов Иван Иванович"
+           autocomplete="name" autocorrect="off" spellcheck="false">
   </div>
-  <div class="field-row">
-    <div class="field-label">Дата рождения</div>
-    <input class="field-input" id="dob" type="text" placeholder="15.03.1990"
+  <div class="frow">
+    <div class="flabel">Дата рождения</div>
+    <input class="finput" id="dob" type="text" placeholder="15.03.1990"
            inputmode="numeric" maxlength="10">
   </div>
 </div>
-<div class="error-msg" id="err">Заполните ФИО и дату рождения</div>
+<div class="err" id="err">Заполните ФИО и дату рождения</div>
 
-<div class="section-title">Инструмент</div>
-<div class="tool-list" id="toolList"></div>
+<div class="sec-title">Инструмент</div>
+<div class="tlist" id="tlist"></div>
 
-<div class="section-title">Результат</div>
-<div class="score-card">
-  <div class="score-circle" id="scoreCircle">
-    <span class="score-num" id="scoreNum">0</span>
-    <span class="score-max">/ 11</span>
+<div class="sec-title">Результат</div>
+<div class="scard">
+  <div class="scirc" id="scirc">
+    <span class="snum" id="snum">0</span>
+    <span class="smax" id="smax">/ 17</span>
   </div>
-  <div class="score-info">
-    <div class="score-cat" id="scoreCat">🥉 Базовый</div>
-    <div class="score-bar-wrap">
-      <div class="score-bar" id="scoreBar"></div>
-    </div>
-    <div class="score-pct" id="scorePct">0% — заполните анкету</div>
+  <div class="sinfo">
+    <div class="scat" id="scat">🥉 Базовый</div>
+    <div class="sbar-wrap"><div class="sbar" id="sbar"></div></div>
+    <div class="spct" id="spct">0% — отметьте инструмент</div>
   </div>
 </div>
 
-<div class="submit-bar">
-  <button class="submit-btn" id="submitBtn" onclick="submit()">
-    Отправить анкету
-  </button>
+<!-- Экран успеха -->
+<div class="success" id="success">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Анкета отправлена!</div>
+  <div class="success-sub">Ожидайте подтверждения категории от руководства</div>
+</div>
+
+<div class="bar">
+  <button class="sbtn" id="sbtn" onclick="doSubmit()">Отправить анкету</button>
 </div>
 
 <script>
@@ -232,113 +140,118 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-// ─── Инструменты ─────────────────────────────────────────
 const TOOLS = [
-  { key: "drill",      icon: "🔩", name: "Шуруповёрт / дрель",              pts: 1 },
-  { key: "perforator", icon: "⚒",  name: "Перфоратор",                       pts: 1 },
-  { key: "jigsaw",     icon: "🪚", name: "Электролобзик",                    pts: 1 },
-  { key: "grinder",    icon: "⚙️", name: "Угловая шлифмашина (болгарка)",   pts: 1 },
-  { key: "router",     icon: "🔧", name: "Фрезер",                           pts: 1 },
-  { key: "laser",      icon: "📐", name: "Лазерный уровень",                 pts: 1 },
-  { key: "vacuum",     icon: "🧹", name: "Строительный пылесос",             pts: 1 },
-  { key: "clamps",     icon: "🗜", name: "Струбцины / зажимы (набор)",       pts: 1 },
-  { key: "hand_tools", icon: "🔨", name: "Ручной инструмент (молоток, стамески, ключи)", pts: 1 },
-  { key: "car",        icon: "🚗", name: "Личный автомобиль",                pts: 2 },
+  {key:"drill",       ico:"🔩", name:"Шуруповёрт / дрель",                           pts:1},
+  {key:"perforator",  ico:"⚒️", name:"Перфоратор",                                    pts:1},
+  {key:"perf_dust",   ico:"💨", name:"Насадка пылеотсоса для перфоратора",            pts:1},
+  {key:"jigsaw",      ico:"🪚", name:"Электролобзик",                                 pts:1},
+  {key:"plunge_saw",  ico:"🔪", name:"Погружная (дисковая) пила",                     pts:2},
+  {key:"guide_rail",  ico:"📏", name:"Шина направляющая",                             pts:1},
+  {key:"grinder",     ico:"⚙️", name:"Угловая шлифмашина (болгарка)",                pts:1},
+  {key:"router",      ico:"🔧", name:"Фрезер",                                        pts:1},
+  {key:"laser",       ico:"📐", name:"Лазерный уровень",                              pts:1},
+  {key:"vacuum",      ico:"🧹", name:"Строительный пылесос",                          pts:1},
+  {key:"clamps",      ico:"🗜️", name:"Струбцины / зажимы (набор ≥4 шт.)",           pts:1},
+  {key:"templates",   ico:"📋", name:"Мебельные шаблоны / кондукторы",               pts:1},
+  {key:"stepladder",  ico:"🪜", name:"Стремянка",                                     pts:1},
+  {key:"hand_tools",  ico:"🔨", name:"Ручной инструмент (молоток, стамески, ключи)",  pts:1},
+  {key:"car",         ico:"🚗", name:"Личный автомобиль",                             pts:2},
 ];
-const MAX_SCORE = TOOLS.reduce((s, t) => s + t.pts, 0); // 11
+const MAX = TOOLS.reduce((s,t) => s+t.pts, 0); // 17
+document.getElementById('smax').textContent = '/ ' + MAX;
 
-const checked = {};
-TOOLS.forEach(t => checked[t.key] = false);
+const state = {};
+TOOLS.forEach(t => state[t.key] = false);
 
-// ─── Рендер чеклиста ────────────────────────────────────
-const list = document.getElementById('toolList');
-TOOLS.forEach(tool => {
+// Рендер списка
+const tlist = document.getElementById('tlist');
+TOOLS.forEach(t => {
   const el = document.createElement('div');
-  el.className = 'tool-item';
-  el.id = 'item_' + tool.key;
+  el.className = 'titem';
+  el.id = 'ti_' + t.key;
+  const ptsCls = t.pts === 2 ? 'tpts pro' : 'tpts';
+  const ptsLbl = t.pts === 2 ? '+2 б' : '+1 б';
   el.innerHTML = `
-    <div class="tool-check">
-      <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-        <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <div class="tcheck">
+      <svg width="12" height="10" viewBox="0 0 12 10">
+        <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
     </div>
-    <span class="tool-icon">${tool.icon}</span>
-    <span class="tool-name">${tool.name}</span>
-    <span class="tool-pts">${tool.pts === 2 ? '+2 б' : '+1 б'}</span>
-  `;
-  el.addEventListener('click', () => toggle(tool.key, el));
-  list.appendChild(el);
+    <span class="tico">${t.ico}</span>
+    <span class="tname">${t.name}</span>
+    <span class="${ptsCls}">${ptsLbl}</span>`;
+  el.addEventListener('click', () => {
+    state[t.key] = !state[t.key];
+    el.classList.toggle('on', state[t.key]);
+    updateScore();
+  });
+  tlist.appendChild(el);
 });
 
-function toggle(key, el) {
-  checked[key] = !checked[key];
-  el.classList.toggle('checked', checked[key]);
-  updateScore();
-}
-
-// ─── Живой подсчёт ──────────────────────────────────────
 function updateScore() {
-  const score = TOOLS.reduce((s, t) => s + (checked[t.key] ? t.pts : 0), 0);
-  const pct   = Math.round(score / MAX_SCORE * 100);
-
-  document.getElementById('scoreNum').textContent = score;
+  const score = TOOLS.reduce((s,t) => s + (state[t.key] ? t.pts : 0), 0);
+  const pct   = Math.round(score / MAX * 100);
+  document.getElementById('snum').textContent = score;
 
   let cat, color;
-  if (pct >= 80)      { cat = '🥇 Мастер';     color = '#16a34a'; }
-  else if (pct >= 50) { cat = '🥈 Специалист';  color = '#d97706'; }
-  else                { cat = '🥉 Базовый';     color = '#64748b'; }
+  if      (pct >= 80) { cat = '🥇 Мастер';    color = '#16a34a'; }
+  else if (pct >= 50) { cat = '🥈 Специалист'; color = '#d97706'; }
+  else                { cat = '🥉 Базовый';    color = '#64748b'; }
 
-  document.getElementById('scoreCat').textContent = cat;
-  document.getElementById('scoreBar').style.width  = pct + '%';
-  document.getElementById('scoreBar').style.background = color;
-  document.getElementById('scorePct').textContent  = pct + '%';
-  document.getElementById('scoreCircle').style.borderColor = color;
-  document.getElementById('scoreNum').style.color  = color;
+  document.getElementById('scat').textContent = cat;
+  document.getElementById('sbar').style.cssText = `width:${pct}%;background:${color}`;
+  document.getElementById('spct').textContent  = pct + '%';
+  document.getElementById('scirc').style.borderColor = color;
+  document.getElementById('snum').style.color  = color;
 }
 
-// ─── Автоформат ДР ──────────────────────────────────────
+// Автоформат ДР: 15.03.1990
 document.getElementById('dob').addEventListener('input', function(e) {
-  let v = e.target.value.replace(/\D/g, '');
+  let v = e.target.value.replace(/\D/g,'');
   if (v.length > 2) v = v.slice(0,2) + '.' + v.slice(2);
   if (v.length > 5) v = v.slice(0,5) + '.' + v.slice(5);
-  e.target.value = v.slice(0, 10);
+  e.target.value = v.slice(0,10);
 });
 
-// ─── Отправка ───────────────────────────────────────────
-function submit() {
+function doSubmit() {
   const fio = document.getElementById('fio').value.trim();
   const dob = document.getElementById('dob').value.trim();
-  const errEl = document.getElementById('err');
+  const err = document.getElementById('err');
 
   if (!fio || !dob) {
-    errEl.classList.add('show');
-    errEl.textContent = !fio
-      ? 'Введите ФИО'
-      : 'Введите дату рождения (например: 15.03.1990)';
+    err.className = 'err show';
+    err.textContent = !fio ? 'Введите ФИО' : 'Введите дату рождения (например: 15.03.1990)';
     document.getElementById(fio ? 'dob' : 'fio').focus();
     return;
   }
-  errEl.classList.remove('show');
+  err.className = 'err';
 
-  const score = TOOLS.reduce((s, t) => s + (checked[t.key] ? t.pts : 0), 0);
-  const pct   = Math.round(score / MAX_SCORE * 100);
+  const score = TOOLS.reduce((s,t) => s + (state[t.key] ? t.pts : 0), 0);
+  const pct   = Math.round(score / MAX * 100);
   let category;
-  if (pct >= 80)      category = '🥇 Мастер';
+  if      (pct >= 80) category = '🥇 Мастер';
   else if (pct >= 50) category = '🥈 Специалист';
   else                category = '🥉 Базовый';
 
-  const payload = JSON.stringify({
-    fio, dob, tools: checked, score, max_score: MAX_SCORE, pct, category
-  });
+  const payload = JSON.stringify({fio, dob, tools: state, score, max_score: MAX, pct, category});
 
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Отправляем...';
+  // Показываем success-экран сразу (до отправки — UX)
+  document.getElementById('success').className = 'success show';
+  document.getElementById('sbtn').disabled = true;
 
-  tg.sendData(payload);
+  // Отправляем данные в бот и закрываем
+  try {
+    tg.sendData(payload);
+  } catch(e) {
+    console.error('sendData error:', e);
+  }
+  // Fallback: если Telegram не закрыл сам — закрыть через 1.5 сек
+  setTimeout(() => {
+    try { tg.close(); } catch(e) {}
+  }, 1500);
 }
 
-// Начальный рендер
 updateScore();
 </script>
 </body>
